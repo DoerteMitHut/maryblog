@@ -1,15 +1,17 @@
 {% extends "layout.html" %}
-{% block title_image %}<header class="masthead" style="background-image: url('{{url_for('static',filename='assets/img/sundown_canoe.png')}}'">{% endblock %}
+
+{% block title_image %}<header class="masthead" style="background-image: url('{{url_for('static',filename='assets/img/maryann.png')}}'">{% endblock %}
+
 {% block heading %}
-<h1><div class="sketchyfont">Sketchy-Ass<div> Boat Life</h1><br>
-<h3>mit Niklas</h3>
-{% endblock %}        <!-- Main Content-->
+<h1>Galerie</h1><br>
+{% endblock %}
+
 {% block content %}
+{% for img in images %}
+<!-- Post preview-->
 <div>
     The Mary-Ann is currently at <a href="https://www.what3words.com/{{twa['words']}}">///{{twa['words']}}</a>
 </div>
-{% for p in posts %}
-<!-- Post preview-->
 <div class="post-preview">
     <a href="post">
         <h2 class="post-title">{{p.headline}}</h2>
@@ -24,6 +26,4 @@
 <!-- Divider-->
 <hr class="my-4" />
 {% endfor %}
-<!-- Pager-->
-<div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
 {% endblock %}

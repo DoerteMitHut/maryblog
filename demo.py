@@ -2,9 +2,10 @@ import sys
 import random
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 import overpy
 import what3words
-
+import os
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 
@@ -14,25 +15,26 @@ geocoder = what3words.Geocoder("15V3XXO6")
 BASECOORDS = [52.396947, 12.944850]
 
 
-class PostTemplate(db.Model):
-    id = db.Column(db.Integer,primary_key=True)
-    template_name = db.Column(db.String(27),nullable=False)
-    template_file = db.Column(db.String(32),nullable=False)
+# class PostTemplate(db.Model):
+#     id = db.Column(db.Integer,primary_key=True)
+#     template_name = db.Column(db.String(27),nullable=False)
+#     template_file = db.Column(db.String(32),nullable=False)
 
-    def __init__(self,id,name,filename=""):
-        self.id = id
-        self.template_name = name
-        if template_file == "":
-            self.template_file = ".".join([template_name,"html"])
-        else:
-            self.template_file = template_file
+#     def __init__(self,id,name,filename=""):
+#         self.id = id
+#         self.template_name = name
+#         if template_file == "":
+#             self.template_file = ".".join([template_name,"html"])
+#         else:
+#             self.template_file = template_file
 
 
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    template_id = db.Column(db.Integer, db.ForeignKey('post_template.id'))
-    template = db.relationship("PostTemplate")
+    template = db.Column(db.String(20),nullable = False)
+    #template_id = db.Column(db.Integer, db.ForeignKey('post_template.id'))
+    #template = db.relationship("PostTemplate")
 
     author = db.Column(db.String(20),nullable = False)
 
@@ -75,6 +77,8 @@ class Point(db.Model):
     @property
     def longitude(self):
         return self.longitude_off + self.district.longitude
+
+
 class District(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
@@ -94,7 +98,10 @@ class District(db.Model):
 @app.route('/index')
 def index():
     districts = District.query.all()
-    return render_template('index.html', districts=districts,twa=geocoder.convert_to_3wa(what3words.Coordinates(52.417429,12.917370),language='de'))
+
+    posts = Post.query.all()
+
+    return render_template('index.html', districts=districts,twa=geocoder.convert_to_3wa(what3words.Coordinates(52.417429,12.917370),language='de'),posts=posts)
 
 @app.route('/about')
 def about():
@@ -108,7 +115,11 @@ def contact():
 
 @app.route('/post')
 def post():
-    return render_template('post.html', districts=districts)
+    return render_template('post.html', post=Post.query.all()[0])
+
+@app.route('/post/<int:post_id>')
+def singlepost(post_id):
+    return render_template('post.html', post=Post.query.filter_by(id=post_id).all()[0])
 
 @app.route('/district/<int:district_id>')
 def district(district_id):
@@ -116,6 +127,9 @@ def district(district_id):
     coords = [[point.latitude, point.longitude] for point in points]
     return jsonify({"data": coords})
 
+@app.route('/gallery')
+def gallery():
+    return render_template('gallery.html')
 
 def make_random_data(db):
     db.session.query(Point).delete()
@@ -160,11 +174,26 @@ def make_random_data(db):
             db.session.add(row)
     db.session.commit()
 
+def readPosts(db):
+    db.session.query(Post).delete()
+    HEADLINES = ["Bester Post", "Post 2", "Do Androids dream of Electric Sheep?", "A Fish in the Ocean"]
+    SUMMARIES = ["Der beste Post wo gibt", "Ein Sequel zum Besten Post wo gibt. Kann ja nur schlimmer werden.", "Like..., I mean... DO THEY?!", ".. is pretty fuckoed up but still better off than one on land."]
+    CONTENTS = ["42 ist die Antwort", "43 ist nichts", "zzzzzZZZZZZzzzzzZZZZ baaaa!", "Blub! Blub!"]
+    for i,f in enumerate(os.listdir('templates/posts')):
+        if not f.startswith('.'):
+            fo = open(f"templates/posts/{f}")
+            s = fo.read()
+            p = Post(i,"None","Niklas",func.now(),f.split('.')[0].replace('_', ' '),s.split('=ENDSUMMARY=')[0],f)
+            fo.close()
+            db.session.add(p)
+    db.session.commit()
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         if sys.argv[1] == 'mkdb':
             db.create_all()
             make_random_data(db)
+            readPosts(db)
     else:
         app.run(debug=True)
