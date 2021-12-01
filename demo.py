@@ -2,15 +2,14 @@ import sys
 import random
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_scss import Scss
 import overpy
+import what3words
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 
 db = SQLAlchemy(app)
-Scss(app)
-
+geocoder = what3words.Geocoder("15V3XXO6")
 
 BASECOORDS = [52.396947, 12.944850]
 
@@ -76,8 +75,6 @@ class Point(db.Model):
     @property
     def longitude(self):
         return self.longitude_off + self.district.longitude
-
-
 class District(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
@@ -97,7 +94,7 @@ class District(db.Model):
 @app.route('/index')
 def index():
     districts = District.query.all()
-    return render_template('index.html', districts=districts)
+    return render_template('index.html', districts=districts,twa=geocoder.convert_to_3wa(what3words.Coordinates(52.417429,12.917370),language='de'))
 
 @app.route('/about')
 def about():
