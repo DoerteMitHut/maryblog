@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title_image %}<header class="masthead" style="background-image: url('{{url_for('static',filename='assets/img/sundown_canoe.png')}}'">{% endblock %}
+{% block heading %}
+<h1>Work</h1><br>
+<h3>immer was zu tun</h3>
+{% endblock %}        <!-- Main Content-->
+{% block content %}
+<div class="bar"><div class="redbar"></div><div class="greenbar" style="width:{{(donecards|length/(todocards|length+donecards|length))*100}}%;"></div></div>
+<div class="mygrid">
+    <div class="cardcolumn">
+        {% for c in todocards %}
+        <!-- Post preview-->
+        <div class="trellocard tcToDo">
+            <a href="post">
+                <img class="todostamp" src={{url_for('static',filename='assets/img/todo.svg')}}>
+                <h2 class="post-title">{{c['name']}}</h2>
+                <h3 class="post-subtitle">{{c['desc'][:30]}}</h3>
+            </a>
+        </div>
+        <!-- Divider-->
+        <hr class="my-4" />
+        {% endfor %}
+    </div>
+    <div>
+        {% for c in donecards %}
+        <!-- Post preview-->
+        <div class="trellocard tcDone">
+            <a href="post">
+                <img class="donestamp" src={{url_for('static',filename='assets/img/jobdone.svg')}}>
+                <h2 class="post-title">{{c['name']}}</h2>
+                <h3 class="post-subtitle">{{c['desc'][:30]}}</h3>
+            </a>
+        </div>
+        <!-- Divider-->
+        <hr class="my-4" />
+        {% endfor %}
+    </div>
+</div>
+<!-- Pager-->
+<div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+{% endblock %}

@@ -3,9 +3,13 @@ import random
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
+
 import overpy
 import what3words
 import os
+import requests
+import json
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 
@@ -130,6 +134,13 @@ def district(district_id):
 @app.route('/gallery')
 def gallery():
     return render_template('gallery.html')
+
+@app.route('/todo')
+def todo():
+    todocards = json.loads(requests.get('https://api.trello.com/1/lists/5f6899f8602a436d5c316547/cards?key=cb9a3197e4b1cedd7d3a7f31e6735bb6&token=84565059fbc2fecf5ecc6260c24a10d3d1da1d2ca5bcc004f7d2336c7aced49f').text)
+    donecards = json.loads(requests.get('https://api.trello.com/1/lists/61977c2bdfd08d75122dbb06/cards?key=cb9a3197e4b1cedd7d3a7f31e6735bb6&token=84565059fbc2fecf5ecc6260c24a10d3d1da1d2ca5bcc004f7d2336c7aced49f').text)
+    cards = todocards + donecards
+    return render_template('todo.html',donecards=donecards,todocards=todocards)
 
 def make_random_data(db):
     db.session.query(Point).delete()
