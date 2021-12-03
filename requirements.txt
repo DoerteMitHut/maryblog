@@ -1,0 +1,6 @@
+flask
+flask_sqlalchemy
+sqlalchemy
+overpy
+what3words
+requests
