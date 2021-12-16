@@ -11301,20 +11301,51 @@ header.masthead .site-heading .h1 {
 }
 
 .bar{
-  width: 80%;
-  padding: 2em;
+  width: 100%;
+  height: 2em;
   position: relative;
+  border-radius: 1em 1em 1em 1em;
+  overflow: hidden;
 }
 .redbar{
-  background-color: red;
-  padding: 1em;
+  background-color: darkgray;
+  height: 2em;
   position: absolute;
   width: 100%;
+  border-radius: 1em 1em 1em 1em;
 }
 
 .greenbar{
-  background-color: green;
-  padding-top: 1em;
+  background-image: url(https://parentsforfuture.de/system/files/inline-images/Viersener-warming-stripes-51660032.png);
+  height: 2em;
   position: absolute;
-  padding-bottom: 1em;
+  border-radius: 1em 1em 1em 1em;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.mary-sidebar{
+  position: fixed;
+left: 0;
+top: 25%;
+width: 20em;
+height: 50%;
+background-color: gray;
+border: 5px solid #4d4d4d;
+border-radius: 0px 18px 18px 0px;
+}
+
+.sidebar-content{
+ position: fixed;
+ left: 0;
+ top: 30%; 
+ height: 30%;
+}
+
+.sidebar-drawer{
+left: 20em;
+position: absolute;
+width: 3%;
+margin: auto;
+top: 20px;
 }
