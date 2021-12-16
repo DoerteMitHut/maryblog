@@ -142,6 +142,14 @@ def todo():
     cards = todocards + donecards
     return render_template('todo.html',donecards=donecards,todocards=todocards)
 
+@app.route('/todotest')
+def todotest():
+    todocards = json.loads(requests.get('https://api.trello.com/1/lists/5f6899f8602a436d5c316547/cards?key=cb9a3197e4b1cedd7d3a7f31e6735bb6&token=84565059fbc2fecf5ecc6260c24a10d3d1da1d2ca5bcc004f7d2336c7aced49f').text)
+    donecards = json.loads(requests.get('https://api.trello.com/1/lists/61977c2bdfd08d75122dbb06/cards?key=cb9a3197e4b1cedd7d3a7f31e6735bb6&token=84565059fbc2fecf5ecc6260c24a10d3d1da1d2ca5bcc004f7d2336c7aced49f').text)
+    cards = todocards + donecards
+    return render_template('todotest.html',donecards=donecards,todocards=todocards)
+
+
 def make_random_data(db):
     db.session.query(Point).delete()
     db.session.query(District).delete()
