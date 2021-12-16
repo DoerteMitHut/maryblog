@@ -27,3 +27,14 @@ window.addEventListener('DOMContentLoaded', () => {
         scrollPos = currentTop;
     });
 })
+function scaleUp(x){
+    const factor = 1.1;
+    var r = x.getAttribute('r');
+    //x.setAttribute('transform','translate(-'+r/factor+',-'+r/factor+') scale('+factor+','+factor+')');
+    x.setAttribute('r',"10");
+ }
+function scaleDown(x){
+    const factor = 1.1;
+    var r = x.getAttribute('r');
+    x.setAttribute('r',"7.8");
+    }
