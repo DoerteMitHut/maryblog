@@ -105,7 +105,8 @@ def index():
 
     posts = Post.query.all()
 
-    return render_template('index.html', districts=districts,twa=geocoder.convert_to_3wa(what3words.Coordinates(52.417429,12.917370),language='de'),posts=posts)
+    #return render_template('index.html', districts=districts,twa=geocoder.convert_to_3wa(what3words.Coordinates(52.417429,12.917370),language='de',posts=posts)
+    return render_template('index.html', districts=districts,twa="placeholder",language='de',posts=posts)
 
 @app.route('/about')
 def about():
